@@ -177,10 +177,10 @@
             document.getElementById("step2").style.display = "none";
 
             if (role === "執行部") {
-                document.getElementById("voting-header").textContent = "全ての局の投票をやってね^^。";
+                document.getElementById("voting-header").textContent = "企画書を読んで「問題なし！」と思った企画にはチェックをつけてね^^";
                 showAllDepartments();
             } else {
-                document.getElementById("voting-header").textContent = `${department}以外の企画に投票してね^^。`;
+                document.getElementById("voting-header").textContent = `${department}局以外の企画書を読んで、「問題なし！」と思った企画にはチェックをつけてね^`;
                 filterDepartments(department);
             }
 

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投票システム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            max-width: 600px;
+            margin: 2em auto;
+            padding: 1em;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .option {
+            margin: 1em 0;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5em;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        select, label {
+            display: block;
+            margin: 1em 0 0.5em;
+        }
+        .department {
+            margin-top: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>投票システム</h1>
+    </header>
+    <main>
+        <section id="step1">
+            <h2>所属はどこですか？</h2>
+            <div class="option">
+                <button onclick="selectDepartment('執行部')">執行部</button>
+                <button onclick="selectDepartment('総務')">総務</button>
+                <button onclick="selectDepartment('渉外')">渉外</button>
+                <button onclick="selectDepartment('IT')">IT</button>
+                <button onclick="selectDepartment('広報')">広報</button>
+                <button onclick="selectDepartment('装飾')">装飾</button>
+                <button onclick="selectDepartment('室内')">室内</button>
+                <button onclick="selectDepartment('屋外')">屋外</button>
+                <button onclick="selectDepartment('ステージ')">ステージ</button>
+            </div>
+        </section>
+
+        <section id="step2" style="display: none;">
+            <h2>役職は何ですか？</h2>
+            <div class="option">
+                <button onclick="selectRole('執行部')">執行部</button>
+                <button onclick="selectRole('局長・副長')">局長・副長</button>
+                <button onclick="selectRole('副局長、副財務、日吉代表')">副局長、副財務、日吉代表</button>
+            </div>
+        </section>
+
+        <section id="voting" style="display: none;">
+            <h2 id="voting-header"></h2>
+            <div id="voting-section">
+                <h3>局ごとの企画</h3>
+                <div class="department" id="総務">
+                    <h4>総務</h4>
+                    <label><input type="checkbox" value="ボドゲ"> ボドゲ</label>
+                    <label><input type="checkbox" value="自転車発電">自転車発電</label>
+                </div>
+                <div class="department" id="渉外">
+                    <h4>渉外</h4>
+                    <label><input type="checkbox" value="1年生企画A"> 1年生企画</label>
+                    <label><input type="checkbox" value=" 2年生模擬店"> 2年生模擬店</label>
+                    <label><input type="checkbox" value="スタンプラリー"> スタンプラリー</label>
+                </div>
+                <div class="department" id="IT">
+                    <h4>IT</h4>模擬店
+                    <label><input type="checkbox" value="IT企画A"> IT企画A</label>
+                    <label><input type="checkbox" value="IT企画B"> IT企画B</label>
+                </div>
+                <div class="department" id="広報">
+                    <h4>広報</h4>
+                    <label><input type="checkbox" value="広報企画A"> 広報企画A</label>
+                    <label><input type="checkbox" value="広報企画B"> 広報企画B</label>
+                    <label><input type="checkbox" value="広報企画B"> 広報企画B</label>
+                </div>
+                <div class="department" id="装飾">
+                    <h4>装飾</h4>
+                    <label><input type="checkbox" value="入口幕"> 入口幕</label>
+                    <label><input type="checkbox" value="装飾企画B"> 装飾企画B</label>
+                </div>
+                <div class="department" id="室内">
+                    <h4>室内</h4>
+                    <label><input type="checkbox" value="科学館">科学館A</label>
+                    <label><input type="checkbox" value="やがナビ">やがナビ</label>
+                    <label><input type="checkbox" value="天文">天文</label>
+                    <label><input type="checkbox" value="お化け屋敷">お化け屋敷</label>
+                    <label><input type="checkbox" value="やがちゃん（クイズ）">やがちゃん（クイズ）</label>
+                    <label><input type="checkbox" value="やがちゃん（有名人）">やがちゃん（有名人）</label>
+                </div>
+                <div class="department" id="屋外">
+                    <h4>屋外</h4>
+                    <label><input type="checkbox" value="花火">花火</label>
+                    <label><input type="checkbox" value="ラジコン"> ラジコン</label>
+                    <label><input type="checkbox" value="縁日"> 縁日</label>
+                    <label><input type="checkbox" value="やがスポ"> やがスポ</label>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" style="display: none;">
+            <h2>管理者ページ</h2>
+            <p>現在の投票数:</p>
+            <p>はい: <span id="admin-count-yes">0</span></p>
+            <p>いいえ: <span id="admin-count-no">0</span></p>
+        </section>
+    </main>
+    <script>
+        const voteCounts = {
+            yes: 0,
+            no: 0
+        };
+
+        let department = "";
+        let role = "";
+
+        function selectDepartment(selectedDepartment) {
+            department = selectedDepartment;
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "block";
+        }
+
+        function selectRole(selectedRole) {
+            role = selectedRole;
+            document.getElementById("step2").style.display = "none";
+
+            if (role === "執行部") {
+                document.getElementById("voting-header").textContent = "全ての局の投票を行えます。";
+                showAllDepartments();
+            } else {
+                document.getElementById("voting-header").textContent = `${department}以外の企画に投票してください。`;
+                filterDepartments(department);
+            }
+
+            document.getElementById("voting").style.display = "block";
+        }
+
+        function filterDepartments(userDepartment) {
+            const departments = document.querySelectorAll(".department");
+            departments.forEach(dept => {
+                if (dept.id === userDepartment) {
+                    dept.style.display = "none";
+                } else {
+                    dept.style.display = "block";
+                }
+            });
+        }
+
+        function showAllDepartments() {
+            const departments = document.querySelectorAll(".department");
+            departments.forEach(dept => {
+                dept.style.display = "block";
+            });
+        }
+
+        function vote(option) {
+            voteCounts[option]++;
+            document.getElementById(`count-${option}`).textContent = voteCounts[option];
+
+            // Update admin page counts
+            document.getElementById(`admin-count-${option}`).textContent = voteCounts[option];
+        }
+
+        function showAdminPage() {
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "none";
+            document.getElementById("voting").style.display = "none";
+            document.getElementById("admin").style.display = "block";
+        }
+    </script>
+</body>
+</html>

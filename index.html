@@ -139,7 +139,7 @@
                     <label><input type="checkbox" value="やがスポ">やがスポ</label>
                 </div>
                 <div class="department" id="ステージ">
-                    <h4>屋外</h4>
+                    <h4>ステージ</h4>
                     <label><input type="checkbox" value="ステージ設営">ステージ設営</label>
                     <label><input type="checkbox" value="アカペラ">アカペラ</label>
                     <label><input type="checkbox" value="クイズ">クイズ</label>
@@ -177,10 +177,10 @@
             document.getElementById("step2").style.display = "none";
 
             if (role === "執行部") {
-                document.getElementById("voting-header").textContent = "全ての局の投票を行えます。";
+                document.getElementById("voting-header").textContent = "全ての局の投票をやってね^^。";
                 showAllDepartments();
             } else {
-                document.getElementById("voting-header").textContent = `${department}以外の企画に投票してください。`;
+                document.getElementById("voting-header").textContent = `${department}以外の企画に投票してね^^。';
                 filterDepartments(department);
             }
 

@@ -92,15 +92,14 @@
                 <div class="department" id="渉外">
                     <h4>渉外</h4>
                     <label><input type="checkbox" value="1年生企画">1年生企画</label>
-                    <label><input type="checkbox" value=" 2年生模擬店">2年生模擬店</label>
+                    <label><input type="checkbox" value="2年生模擬店">2年生模擬店</label>
                     <label><input type="checkbox" value="スタンプラリー">スタンプラリー</label>
-        
                 </div>
                 <div class="department" id="IT">
                     <h4>IT</h4>
                     <label><input type="checkbox" value="アプリ">アプリ</label>
                     <label><input type="checkbox" value="ITラボ">ITラボ</label>
-                    <label><input type="checkbox" value="Web"> Web</label>
+                    <label><input type="checkbox" value="Web">Web</label>
                 </div>
                 <div class="department" id="広報">
                     <h4>広報</h4>
@@ -111,7 +110,7 @@
                 </div>
                 <div class="department" id="装飾">
                     <h4>装飾</h4>
-                    <label><input type="checkbox" value="入口幕"> 入口幕</label>
+                    <label><input type="checkbox" value="入口幕">入口幕</label>
                     <label><input type="checkbox" value="横断幕">横断幕</label>
                     <label><input type="checkbox" value="大階段">大階段</label>
                     <label><input type="checkbox" value="長看板">長看板</label>
@@ -149,6 +148,8 @@
                     <label><input type="checkbox" value="パフォーマンス">パフォーマンス</label>
                 </div>
             </div>
+            <!-- 追加: 投票を確定するボタン -->
+            <button id="confirm-vote" onclick="submitVote()" style="display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px;">投票を確定する</button>
         </section>
 
         <section id="admin" style="display: none;">
@@ -173,80 +174,46 @@
             document.getElementById("step2").style.display = "block";
         }
 
-   function selectRole(selectedRole) {
-    role = selectedRole;
-    document.getElementById("step2").style.display = "none";
+        function selectRole(selectedRole) {
+            role = selectedRole;
+            document.getElementById("step2").style.display = "none";
 
-    const votingHeader = document.getElementById("voting-header");
-    const votingSection = document.getElementById("voting-section");
+            const votingHeader = document.getElementById("voting-header");
+            const votingSection = document.getElementById("voting-section");
 
-    // ガイドライン要素を作成
-    const votingGuidelines = document.createElement("p");
-    votingGuidelines.id = "voting-guidelines";
-    votingGuidelines.style.backgroundColor = "#e0f7fa";
-    votingGuidelines.style.padding = "10px";
-    votingGuidelines.style.borderRadius = "5px";
-    votingGuidelines.innerHTML = `
-        <strong>投票の基準:</strong><br>
-        ✅ 企画がルールに違反していない<br>
-        ✅ 企画の内容が明確で実現可能<br>
-        ✅ 他の企画と重複していない<br>
-        <br>
-        例えば…  <br>
-        ❌ 「実現困難な企画」や「説明が不十分な企画」はチェックをつけないでください。  
-    `;
+            // ガイドライン要素を作成
+            const votingGuidelines = document.createElement("p");
+            votingGuidelines.id = "voting-guidelines";
+            votingGuidelines.style.backgroundColor = "#e0f7fa";
+            votingGuidelines.style.padding = "10px";
+            votingGuidelines.style.borderRadius = "5px";
+            votingGuidelines.innerHTML = `
+                <strong>投票の基準:</strong>
+                1つまたは複数の企画を選択してください。選択した企画について議論を通じて最適な決定を下してください。
+            `;
 
-    if (role === "執行部") {
-        votingHeader.textContent = "企画書を読んで「問題なし！」と思った企画にはチェックをつけてね^^";
-        showAllDepartments();
-    } else {
-        votingHeader.textContent = `${department}局以外の企画書を読んで、「問題なし！」と思った企画にはチェックをつけてね^`;
-        filterDepartments(department);
-    }
+            // 表示の更新
+            votingSection.prepend(votingGuidelines);
+            document.getElementById("voting").style.display = "block";
+        }
 
-    // 既にある場合は削除（複数回の表示を防ぐ）
-    const oldGuidelines = document.getElementById("voting-guidelines");
-    if (oldGuidelines) {
-        oldGuidelines.remove();
-    }
-
-    // `voting-header` の直後に追加
-    votingHeader.insertAdjacentElement("afterend", votingGuidelines);
-
-    document.getElementById("voting").style.display = "block";
-}
-
-
-        function showAllDepartments() {
-            const departments = document.querySelectorAll(".department");
-            departments.forEach(dept => {
-                dept.style.display = "block";
+        function submitVote() {
+            const selectedVotes = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedVotes.push(checkbox.value);
             });
+
+            if (selectedVotes.length === 0) {
+                alert("最低1つの企画を選んでください！");
+                return;
+            }
+
+            // ローカルストレージに投票結果を保存（またはサーバーに送信する処理）
+            localStorage.setItem("userVotes", JSON.stringify(selectedVotes));
+
+            // 投票完了ページへ遷移
+            window.location.href = "thankyou.html"; // ここは適宜変更
         }
-
-        function vote(option) {
-            voteCounts[option]++;
-            document.getElementById(`count-${option}`).textContent = voteCounts[option];
-
-            // ローカルストレージに保存
-            localStorage.setItem("voteCounts", JSON.stringify(voteCounts));
-
-            // 管理者ページの表示更新
-            document.getElementById(`admin-count-${option}`).textContent = voteCounts[option];
-        }
-
-        function showAdminPage() {
-            const password = prompt("管理者パスワードを入力してください:");
-            if (password !== "your_secure_password") { // パスワードを適宜変更
-                alert("パスワードが違います");
-        return;
-        }
-    document.getElementById("step1").style.display = "none";
-    document.getElementById("step2").style.display = "none";
-    document.getElementById("voting").style.display = "none";
-    document.getElementById("admin").style.display = "block";
-    showResults();
-}
     </script>
 </body>
 </html>

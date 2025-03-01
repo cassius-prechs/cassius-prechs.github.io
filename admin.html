@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企画書投票用サイト(1次)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            max-width: 600px;
+            margin: 2em auto;
+            padding: 1em;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .option {
+            margin: 1em 0;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5em;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        select, label {
+            display: block;
+            margin: 1em 0 0.5em;
+        }
+        .department {
+            margin-top: 1em;
+        }
+        #thank-you-message {
+            display: none;
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        /* 管理者ページのスタイル */
+        #admin-section {
+            display: none;
+            margin-top: 20px;
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #password-section {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>企画書投票用サイト(1次)</h1>
+    </header>
+    <main>
+        <!-- ここまでが投票フォームの内容 -->
+
+        <!-- 管理者専用ページアクセス用 -->
+        <section id="password-section">
+            <h2>管理者ページへアクセス</h2>
+            <label for="password">パスワードを入力してください:</label>
+            <input type="password" id="password" />
+            <button onclick="checkPassword()">アクセス</button>
+        </section>
+
+        <!-- 管理者ページ -->
+        <section id="admin-section">
+            <h2>管理者ページ</h2>
+            <h3>投票データ:</h3>
+            <pre id="vote-data"></pre>
+        </section>
+
+        <div id="thank-you-message">
+            <h3>投票が完了しました！</h3>
+            <p>ご協力ありがとうございました。</p>
+        </div>
+    </main>
+
+    <script>
+        const adminPassword = "admin123"; // 管理者パスワードを設定
+        const voteData = []; // 投票データを格納する配列
+
+        function submitVote() {
+            const selectedVotes = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedVotes.push(checkbox.value);
+            });
+
+            if (selectedVotes.length === 0) {
+                alert("最低1つの企画を選んでください！");
+                return;
+            }
+
+            // 投票データを保存
+            voteData.push(selectedVotes);
+
+            // ローカルストレージに投票結果を保存
+            localStorage.setItem("userVotes", JSON.stringify(voteData));
+
+            // 投票完了メッセージを表示
+            document.getElementById("thank-you-message").style.display = "block";
+        }
+
+        function checkPassword() {
+            const enteredPassword = document.getElementById("password").value;
+            if (enteredPassword === adminPassword) {
+                // パスワードが正しい場合、管理者ページを表示
+                document.getElementById("admin-section").style.display = "block";
+                document.getElementById("vote-data").textContent = JSON.stringify(voteData, null, 2);
+            } else {
+                alert("パスワードが間違っています");
+            }
+        }
+    </script>
+</body>
+</html>

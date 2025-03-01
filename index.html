@@ -173,31 +173,49 @@
             document.getElementById("step2").style.display = "block";
         }
 
-        function selectRole(selectedRole) {
-            role = selectedRole;
-            document.getElementById("step2").style.display = "none";
+   function selectRole(selectedRole) {
+    role = selectedRole;
+    document.getElementById("step2").style.display = "none";
 
-            if (role === "執行部") {
-                document.getElementById("voting-header").textContent = "企画書を読んで「問題なし！」と思った企画にはチェックをつけてね^^";
-                showAllDepartments();
-            } else {
-                document.getElementById("voting-header").textContent = `${department}局以外の企画書を読んで、「問題なし！」と思った企画にはチェックをつけてね^`;
-                filterDepartments(department);
-            }
+    const votingHeader = document.getElementById("voting-header");
+    const votingSection = document.getElementById("voting-section");
 
-            document.getElementById("voting").style.display = "block";
-        }
+    // ガイドライン要素を作成
+    const votingGuidelines = document.createElement("p");
+    votingGuidelines.id = "voting-guidelines";
+    votingGuidelines.style.backgroundColor = "#e0f7fa";
+    votingGuidelines.style.padding = "10px";
+    votingGuidelines.style.borderRadius = "5px";
+    votingGuidelines.innerHTML = `
+        <strong>投票の基準:</strong><br>
+        ✅ 企画がルールに違反していない<br>
+        ✅ 企画の内容が明確で実現可能<br>
+        ✅ 他の企画と重複していない<br>
+        <br>
+        例えば…  
+        ❌ 「実現困難な企画」や「説明が不十分な企画」はチェックをつけないでください。  
+    `;
 
-        function filterDepartments(userDepartment) {
-            const departments = document.querySelectorAll(".department");
-            departments.forEach(dept => {
-                if (dept.id === userDepartment) {
-                    dept.style.display = "none";
-                } else {
-                    dept.style.display = "block";
-                }
-            });
-        }
+    if (role === "執行部") {
+        votingHeader.textContent = "企画書を読んで「問題なし！」と思った企画にはチェックをつけてね^^";
+        showAllDepartments();
+    } else {
+        votingHeader.textContent = `${department}局以外の企画書を読んで、「問題なし！」と思った企画にはチェックをつけてね^`;
+        filterDepartments(department);
+    }
+
+    // 既にある場合は削除（複数回の表示を防ぐ）
+    const oldGuidelines = document.getElementById("voting-guidelines");
+    if (oldGuidelines) {
+        oldGuidelines.remove();
+    }
+
+    // `voting-header` の直後に追加
+    votingHeader.insertAdjacentElement("afterend", votingGuidelines);
+
+    document.getElementById("voting").style.display = "block";
+}
+
 
         function showAllDepartments() {
             const departments = document.querySelectorAll(".department");

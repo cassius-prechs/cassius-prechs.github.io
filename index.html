@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +47,13 @@
         }
         .department {
             margin-top: 1em;
+        }
+        #thank-you-message {
+            display: none;
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
         }
     </style>
 </head>
@@ -148,17 +155,16 @@
                     <label><input type="checkbox" value="パフォーマンス">パフォーマンス</label>
                 </div>
             </div>
-            <!-- 追加: 投票を確定するボタン -->
+            <!-- 投票を確定するボタン -->
             <button id="confirm-vote" onclick="submitVote()" style="display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px;">投票を確定する</button>
         </section>
 
-        <section id="admin" style="display: none;">
-            <h2>管理者ページ</h2>
-            <p>現在の投票数:</p>
-            <p>はい: <span id="admin-count-yes">0</span></p>
-            <p>いいえ: <span id="admin-count-no">0</span></p>
-        </section>
+        <div id="thank-you-message">
+            <h3>投票が完了しました！</h3>
+            <p>ご協力ありがとうございました。</p>
+        </div>
     </main>
+
     <script>
         const voteCounts = {
             yes: 0,
@@ -177,23 +183,6 @@
         function selectRole(selectedRole) {
             role = selectedRole;
             document.getElementById("step2").style.display = "none";
-
-            const votingHeader = document.getElementById("voting-header");
-            const votingSection = document.getElementById("voting-section");
-
-            // ガイドライン要素を作成
-            const votingGuidelines = document.createElement("p");
-            votingGuidelines.id = "voting-guidelines";
-            votingGuidelines.style.backgroundColor = "#e0f7fa";
-            votingGuidelines.style.padding = "10px";
-            votingGuidelines.style.borderRadius = "5px";
-            votingGuidelines.innerHTML = `
-                <strong>投票の基準:</strong>
-                1つまたは複数の企画を選択してください。選択した企画について議論を通じて最適な決定を下してください。
-            `;
-
-            // 表示の更新
-            votingSection.prepend(votingGuidelines);
             document.getElementById("voting").style.display = "block";
         }
 
@@ -211,8 +200,9 @@
             // ローカルストレージに投票結果を保存（またはサーバーに送信する処理）
             localStorage.setItem("userVotes", JSON.stringify(selectedVotes));
 
-            // 投票完了ページへ遷移
-            window.location.href = "thankyou.html"; // ここは適宜変更
+            // 投票完了メッセージを表示
+            document.getElementById("voting").style.display = "none";
+            document.getElementById("thank-you-message").style.display = "block";
         }
     </script>
 </body>

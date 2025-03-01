@@ -228,16 +228,25 @@
             voteCounts[option]++;
             document.getElementById(`count-${option}`).textContent = voteCounts[option];
 
-            // Update admin page counts
+            // ローカルストレージに保存
+            localStorage.setItem("voteCounts", JSON.stringify(voteCounts));
+
+            // 管理者ページの表示更新
             document.getElementById(`admin-count-${option}`).textContent = voteCounts[option];
         }
 
         function showAdminPage() {
-            document.getElementById("step1").style.display = "none";
-            document.getElementById("step2").style.display = "none";
-            document.getElementById("voting").style.display = "none";
-            document.getElementById("admin").style.display = "block";
+            const password = prompt("管理者パスワードを入力してください:");
+            if (password !== "your_secure_password") { // パスワードを適宜変更
+                alert("パスワードが違います");
+        return;
         }
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("voting").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+    showResults();
+}
     </script>
 </body>
 </html>

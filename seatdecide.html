@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新幹線座席決定</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 50%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; text-align: center; font-size: 18px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>新幹線座席決定</h1>
+    <button onclick="generateSeats()">座席を決める</button>
+
+    <h2>行きの座席</h2>
+    <table id="outbound-table">
+        <tr><td>-</td><td>-</td><td>-</td></tr>
+        <tr><td>-</td><td>-</td><td>-</td></tr>
+    </table>
+
+    <h2>帰りの座席</h2>
+    <table id="return-table">
+        <tr><td>-</td><td>-</td></tr>
+        <tr><td>-</td><td>-</td></tr>
+        <tr><td>-</td><td>-</td></tr>
+    </table>
+
+    <script>
+        function generateSeats() {
+            let passengers = ["さいた", "あんり", "きょうや", "かあと", "らいか", "おーしま"];
+            
+            // 固定席の設定
+            let outbound_fixed = { "0-0": "さいた", "0-1": "あんり" };
+            let return_fixed = { "1-0": "さいた", "1-1": "らいか" };
+
+            // 残りのメンバーをランダムにシャッフル
+            let remainingPassengers = passengers.filter(p => !Object.values(outbound_fixed).includes(p) && !Object.values(return_fixed).includes(p));
+            remainingPassengers = remainingPassengers.sort(() => Math.random() - 0.5);
+
+            // 行きの座席を決定
+            let outbound_seats = [
+                [outbound_fixed["0-0"], outbound_fixed["0-1"], remainingPassengers.pop()],
+                [remainingPassengers.pop(), remainingPassengers.pop(), remainingPassengers.pop()]
+            ];
+
+            // 残りのメンバーをランダムにシャッフルし直し
+            remainingPassengers = passengers.filter(p => !Object.values(return_fixed).includes(p));
+            remainingPassengers = remainingPassengers.sort(() => Math.random() - 0.5);
+
+            // 帰りの座席を決定
+            let return_seats = [
+                [remainingPassengers.pop(), remainingPassengers.pop()],
+                [return_fixed["1-0"], return_fixed["1-1"]],
+                [remainingPassengers.pop(), remainingPassengers.pop()]
+            ];
+
+            // 表を更新
+            updateTable("outbound-table", outbound_seats);
+            updateTable("return-table", return_seats);
+        }
+
+        function updateTable(tableId, seats) {
+            let table = document.getElementById(tableId);
+            let rows = table.getElementsByTagName("tr");
+            for (let i = 0; i < seats.length; i++) {
+                let cells = rows[i].getElementsByTagName("td");
+                for (let j = 0; j < seats[i].length; j++) {
+                    cells[j].textContent = seats[i][j];
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -32,11 +32,8 @@
         function generateSeats() {
             let passengers = ["さいた", "あんり", "きょうや", "かあと", "らいか", "おーしま"];
             
-            // 固定席の設定
-            let outbound_fixed = { "0-0": "さいた", "0-1": "あんり" };
-            let return_fixed = { "1-0": "さいた", "1-1": "らいか" };
 
-            // 残りのメンバーをランダムにシャッフル
+            // メンバーをランダムにシャッフル
             let remainingPassengers = passengers.filter(p => !Object.values(outbound_fixed).includes(p) && !Object.values(return_fixed).includes(p));
             remainingPassengers = remainingPassengers.sort(() => Math.random() - 0.5);
 
@@ -46,7 +43,7 @@
                 [remainingPassengers.pop(), remainingPassengers.pop(), remainingPassengers.pop()]
             ];
 
-            // 残りのメンバーをランダムにシャッフルし直し
+            // メンバーをランダムにシャッフルし直し
             remainingPassengers = passengers.filter(p => !Object.values(return_fixed).includes(p));
             remainingPassengers = remainingPassengers.sort(() => Math.random() - 0.5);
 

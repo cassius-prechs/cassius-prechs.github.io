@@ -2,201 +2,160 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>2026 | HORSE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&family=Inter:wght@100&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 丙午 - New Year Greeting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --text: #ffffff;
-            --accent: #d4af37; /* 落ち着いた金色 */
+            --bg-color: #f8f7f2;
+            --ink-color: #1a1a1a;
+            --gold-color: #c5a059;
+            --accent-red: #8e2c2c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
-            background: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 50% 50%, rgba(255,255,255,0.5) 0%, transparent 80%),
+                repeating-radial-gradient(rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 100%);
+            background-size: 100% 100%, 3px 3px;
+            color: var(--ink-color);
             font-family: 'Shippori Mincho', serif;
-            /* iOSのSafariなどでのアドレスバーによるガタつきを防ぐ */
-            height: 100dvh;
+            /* スマホで余計なスクロールが発生しないように固定 */
+            height: 100dvh; 
             width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
+        }
+
+        /* 背景の巨大な「午」：スマホでは位置を微調整 */
+        .bg-kanji {
+            position: absolute;
+            font-size: 70vh;
+            color: var(--gold-color);
+            opacity: 0.08;
+            z-index: 0;
+            user-select: none;
+            right: -5vh;
+            bottom: -5vh;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .container {
             position: relative;
+            z-index: 1;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row-reverse; 
+            writing-mode: vertical-rl;
+            height: 80dvh;
+            max-width: 90vw;
+            padding: 20px 0;
         }
 
-        /* --- 背景要素 --- */
-        .bg-layer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* 背景が操作の邪魔にならないように */
-            z-index: -1;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* 挨拶のメインコピー */
+        .main-copy {
+            font-size: clamp(1.8rem, 10vw, 3.5rem);
+            letter-spacing: 0.8rem;
+            font-weight: 700;
+            border-right: 1px solid rgba(0,0,0,0.1);
+            padding-right: 1.5rem;
+            margin-right: 1rem;
+            animation: inkAppear 2.5s ease-out forwards;
         }
 
-        /* 背景の2026テキスト */
-        .bg-text {
-            position: absolute;
-            font-family: 'Inter', sans-serif;
-            font-size: min(30vw, 40vh); /* 画面に合わせて巨大すぎないように調整 */
-            font-weight: 100;
-            color: rgba(255,255,255,0.05);
-            letter-spacing: -0.05em;
+        /* サブテキスト：スマホで見やすいよう行間を調整 */
+        .sub-copy {
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            letter-spacing: 0.3rem;
+            line-height: 2.2;
+            padding-right: 1.5rem;
+            animation: inkAppear 2.5s ease-out 0.8s forwards;
+            opacity: 0;
+        }
+
+        /* 年号と落款 */
+        .footer {
+            margin-right: auto;
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            padding-bottom: 10px;
+        }
+
+        .year-label {
+            font-size: 0.9rem;
+            letter-spacing: 0.2rem;
+            color: var(--gold-color);
             white-space: nowrap;
         }
 
-        /* 背景の馬（SVG） */
-        .bg-horse-svg {
-            position: absolute;
-            /* 画面からはみ出すくらい巨大に配置して迫力を出す */
-            width: 120vmax;
-            height: 120vmax;
-            opacity: 0.15; /* ほんのり見える程度に */
-            transform: rotate(-10deg) translateX(10%);
-        }
-        .bg-horse-svg path {
-            fill: none;
-            stroke: var(--accent);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            /* 線が描かれるアニメーション */
-            stroke-dasharray: 2000;
-            stroke-dashoffset: 2000;
-            animation: drawStroke 4s ease-out forwards;
-        }
-
-        /* --- メインコンテンツ（縦書き） --- */
-        .stage {
-            position: relative;
-            display: flex;
-            flex-direction: row-reverse; /* 右から左へ読む */
-            writing-mode: vertical-rl;
-            height: 65dvh;
-            max-height: 600px;
-            gap: 2rem;
-            z-index: 1;
-        }
-
-        /* 改行を制御するための行ブロック */
-        .text-line {
-            white-space: nowrap; /* 勝手な折り返しを禁止 */
-            display: block;
-            opacity: 0;
-        }
-
-        /* タイトル：颯爽。 */
-        .title-block {
-            font-size: clamp(3rem, 12vw, 5.5rem);
-            font-weight: 800;
-            letter-spacing: 1.2rem;
-            line-height: 1;
-            /* 下からせり出すアニメーション */
-            clip-path: inset(0 0 105% 0);
-            animation: revealUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-        }
-
-        /* メッセージ部分 */
-        .message-block {
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-            letter-spacing: 0.4rem;
-            color: var(--accent);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem; /* 行間 */
-            margin-top: 2rem; /* タイトルとの段差 */
-        }
-
-        .msg-line {
-            transform: translateY(20px);
-            animation: fadeUp 1.5s ease-out forwards;
-        }
-        /* 1行ずつ遅れて表示させる */
-        .msg-line:nth-child(1) { animation-delay: 1.2s; }
-        .msg-line:nth-child(2) { animation-delay: 1.5s; }
-        .msg-line:nth-child(3) { animation-delay: 1.8s; }
-
-
-        /* 抽象的な「午」の印 */
-        .seal {
-            position: absolute;
-            bottom: -30px;
-            right: -10px;
-            width: 45px;
-            height: 45px;
-            border: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--accent);
+        .hanko {
             writing-mode: horizontal-tb;
-            opacity: 0;
-            animation: fadeIn 1s ease 2.5s forwards;
+            border: 1.5px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 3px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            line-height: 1.1;
+            border-radius: 1px;
+            display: inline-block;
         }
 
-        /* --- アニメーション定義 --- */
-        @keyframes drawStroke {
-            to { stroke-dashoffset: 0; }
-        }
-        @keyframes revealUp {
-            to { clip-path: inset(0 0 -5% 0); opacity: 1; }
-        }
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        @keyframes inkAppear {
+            0% {
+                opacity: 0;
+                filter: blur(15px);
+                transform: translateX(-10px);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateX(0);
+            }
         }
 
-        /* スマホ横向きなどの狭い画面対応 */
-        @media (max-height: 500px) {
-            .stage { height: 80dvh; gap: 1rem; }
-            .title-block { letter-spacing: 0.8rem; }
-            .message-block { gap: 1rem; margin-top: 1rem; }
+        /* スマホ独自の微調整 */
+        @media (max-width: 480px) {
+            .container {
+                height: 75dvh;
+            }
+            .main-copy {
+                padding-right: 1rem;
+                margin-right: 0.5rem;
+            }
+            .sub-copy {
+                padding-right: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-layer">
-        <div class="bg-text">2026</div>
-        <svg class="bg-horse-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-            <path d="M427.5,237.8c-23.9-11.6-65.2-24.2-97.7-18c-8.3-9.8-23.6-25.8-34.4-34.4c-27.6-22.1-57.4-22.4-85-17.2
-                c-2.1-15-12.9-36.1-28-48.4c-26.1-21.3-62.3-20.6-68.5-20.1c-3.6-8.6-13.6-24.2-29.5-28.3C62,65.6,32.7,82.4,26.9,86.6
-                c-6.4,4.7-7.3,13.8-1.8,19.5c2.7,2.9,6.6,4.3,10.5,4.1c16.3-0.9,45.4-4.4,63.2,11c12.3,10.6,18.5,28.2,20.2,40.3
-                c-27.2,9.3-53.9,35.2-62,65.2c-3.5,12.8-3.1,24.1-1.1,32.8c-11.6,9.9-21.9,22.1-30.5,37.1c-5.5,9.5-2.2,21.7,7.3,27.2
-                c9.5,5.5,21.7,2.2,27.2-7.3c6-10.4,13.3-19.2,21.6-26.8c7,14.2,16.4,24.5,24.8,31.6c-7.5,28.3-18.3,63.8-5.1,98.2
-                c3.8,9.8,14.8,14.6,24.6,10.9c9.8-3.8,14.6-14.8,10.9-24.6c-8.6-22.6-3.5-46.5,1.8-64.4c18.1,9.4,40.2,12.6,61.4,7.8
-                c12.1,26.9,34.4,70.9,77.8,83.6c10.5,3.1,21.5-2.9,24.5-13.4c3.1-10.5-2.9-21.5-13.4-24.5c-27.2-8-42.7-35.7-52.4-58.2
-                c28.9-8.2,55.2-25.3,75.8-47.8c16.1,7,33.6,11.7,53.3,13.8c10.9,1.2,20.7-6.8,21.9-17.7C488.6,246.6,438.4,243.1,427.5,237.8z"/>
-        </svg>
+    <div class="bg-kanji">午</div>
+
+    <div class="container">
+        <h1 class="main-copy">
+            風を切り、<br>
+            春を待つ。
+        </h1>
+
+        <div class="sub-copy">
+            千里を往く力強い一歩が<br>
+            光あふれる道へと<br>
+            繋がりますように<br>
+            本年もよろしくお願い申し上げます
+        </div>
+
+        <div class="footer">
+            <div class="year-label">二〇二六  丙午</div>
+            <div class="hanko">謹賀<br>新年</div>
+        </div>
     </div>
-
-    <main class="stage">
-        <div class="text-line title-block">
-            颯爽。
-        </div>
-
-        <div class="message-block">
-            <span class="text-line msg-line">二〇二六、丙午。</span>
-            <span class="text-line msg-line">駿馬のように駆ける。</span>
-            <span class="text-line msg-line">よろしくお願いします。</span>
-        </div>
-
-        <div class="seal">午</div>
-    </main>
 
 </body>
 </html>

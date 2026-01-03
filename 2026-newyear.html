@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 丙午 - New Year Greeting</title>
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2026 | HORSE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #f8f7f2;
@@ -17,145 +17,147 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(at 50% 50%, rgba(255,255,255,0.5) 0%, transparent 80%),
-                repeating-radial-gradient(rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 100%);
-            background-size: 100% 100%, 3px 3px;
             color: var(--ink-color);
             font-family: 'Shippori Mincho', serif;
-            /* スマホで余計なスクロールが発生しないように固定 */
-            height: 100dvh; 
+            height: 100dvh;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
-        /* 背景の巨大な「午」：スマホでは位置を微調整 */
-        .bg-kanji {
+        /* 背景：馬のイラスト（SVG） */
+        .bg-horse-wrap {
             position: absolute;
-            font-size: 70vh;
-            color: var(--gold-color);
-            opacity: 0.08;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 0;
-            user-select: none;
-            right: -5vh;
-            bottom: -5vh;
-            font-weight: 700;
-            line-height: 1;
+            opacity: 0.12;
+            pointer-events: none;
         }
+        .bg-horse-svg {
+            width: 90%;
+            max-width: 600px;
+            height: auto;
+            transform: rotate(-5deg);
+        }
+        .horse-path {
+            stroke: var(--gold-color);
+            stroke-width: 1.5;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease-out forwards;
+        }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        .container {
+        /* メインコンテナ */
+        .stage {
             position: relative;
             z-index: 1;
             display: flex;
-            flex-direction: row-reverse; 
+            flex-direction: row-reverse; /* 右から左へ */
             writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
             height: 80dvh;
-            max-width: 90vw;
-            padding: 20px 0;
+            max-height: 600px;
+            gap: 1.5rem; /* 行間の固定 */
         }
 
-        /* 挨拶のメインコピー */
-        .main-copy {
-            font-size: clamp(1.8rem, 10vw, 3.5rem);
-            letter-spacing: 0.8rem;
-            font-weight: 700;
-            border-right: 1px solid rgba(0,0,0,0.1);
-            padding-right: 1.5rem;
-            margin-right: 1rem;
-            animation: inkAppear 2.5s ease-out forwards;
-        }
-
-        /* サブテキスト：スマホで見やすいよう行間を調整 */
-        .sub-copy {
-            font-size: clamp(0.9rem, 4vw, 1.1rem);
-            letter-spacing: 0.3rem;
-            line-height: 2.2;
-            padding-right: 1.5rem;
-            animation: inkAppear 2.5s ease-out 0.8s forwards;
+        /* 各フレーズを「絶対に折れない柱」にする */
+        .pillar {
+            white-space: nowrap; /* 自動改行を禁止 */
+            display: block;
             opacity: 0;
+            animation: inkAppear 2s ease-out forwards;
         }
 
-        /* 年号と落款 */
-        .footer {
+        /* メインコピー */
+        .main-text {
+            font-size: clamp(2rem, 11vh, 4rem);
+            font-weight: 800;
+            letter-spacing: 1.2rem;
+            line-height: 1.2;
+        }
+
+        /* サブメッセージ */
+        .sub-text {
+            font-size: clamp(0.85rem, 3.8vw, 1.1rem);
+            letter-spacing: 0.4rem;
+            line-height: 2.2;
+            margin-top: 2rem; /* 開始位置を下げてリズムを作る */
+        }
+
+        /* フッター：年号と落款 */
+        .footer-wrap {
             margin-right: auto;
             display: flex;
-            align-items: flex-end;
-            gap: 1.5rem;
-            padding-bottom: 10px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            animation-delay: 1.5s;
         }
-
         .year-label {
             font-size: 0.9rem;
-            letter-spacing: 0.2rem;
             color: var(--gold-color);
-            white-space: nowrap;
+            letter-spacing: 0.3rem;
         }
-
         .hanko {
             writing-mode: horizontal-tb;
-            border: 1.5px solid var(--accent-red);
+            border: 2px solid var(--accent-red);
             color: var(--accent-red);
-            padding: 3px;
-            font-size: 0.7rem;
-            font-weight: 700;
+            padding: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
             line-height: 1.1;
-            border-radius: 1px;
-            display: inline-block;
+            border-radius: 2px;
         }
 
+        /* アニメーション：墨が滲むように */
         @keyframes inkAppear {
-            0% {
-                opacity: 0;
-                filter: blur(15px);
-                transform: translateX(-10px);
-            }
-            100% {
-                opacity: 1;
-                filter: blur(0);
-                transform: translateX(0);
-            }
+            0% { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+            100% { opacity: 1; filter: blur(0); transform: translateY(0); }
         }
 
-        /* スマホ独自の微調整 */
+        /* 遅延の設定 */
+        .del-1 { animation-delay: 0.2s; }
+        .del-2 { animation-delay: 0.6s; }
+        .del-3 { animation-delay: 1.0s; }
+
         @media (max-width: 480px) {
-            .container {
-                height: 75dvh;
-            }
-            .main-copy {
-                padding-right: 1rem;
-                margin-right: 0.5rem;
-            }
-            .sub-copy {
-                padding-right: 1rem;
-            }
+            .stage { gap: 0.8rem; height: 75dvh; }
+            .sub-text { line-height: 2; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-kanji">午</div>
+    <div class="bg-horse-wrap">
+        <svg class="bg-horse-svg" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="horse-path" d="M430,100 C380,80 300,70 250,110 C200,150 180,240 120,260 C60,280 20,250 10,220 M250,110 C270,50 200,20 150,10 C100,0 50,30 40,80 M120,260 C140,290 220,300 280,270 C340,240 380,180 400,120" stroke-linecap="round"/>
+        </svg>
+    </div>
 
-    <div class="container">
-        <h1 class="main-copy">
-            風を切り、<br>
-            春を待つ。
-        </h1>
+    <main class="stage">
+        <div class="pillar main-text del-1">風を切り、</div>
+        <div class="pillar main-text del-2">春を待つ。</div>
 
-        <div class="sub-copy">
+        <div class="pillar sub-text del-3">
             千里を往く力強い一歩が<br>
-            光あふれる道へと<br>
-            繋がりますように<br>
+            光あふれる道へと繋がりますように<br>
             本年もよろしくお願い申し上げます
         </div>
 
-        <div class="footer">
-            <div class="year-label">二〇二六  丙午</div>
+        <div class="pillar footer-wrap">
+            <div class="year-label">二〇二六 丙午</div>
             <div class="hanko">謹賀<br>新年</div>
         </div>
-    </div>
+    </main>
 
 </body>
 </html>
